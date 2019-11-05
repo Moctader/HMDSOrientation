@@ -132,7 +132,7 @@ def print_orthogonal(data, invert=True, res=3.2, title=None, cbar=True, savepath
         ax1.invert_yaxis()
         ax2.invert_yaxis()
         ax3.invert_yaxis()
-    plt.tight_layout()
+    #plt.tight_layout()
 
     # Save the image
     if savepath is not None:

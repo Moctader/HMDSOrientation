@@ -3,7 +3,10 @@ import cv2
 import numpy as np
 import glob
 import h5py
+import h5py as h5
 from PIL import Image
+from scipy.io import loadmat
+
 from scipy import ndimage
 import matplotlib.pyplot as plt
 from skimage.io import imsave
@@ -28,16 +31,19 @@ if __name__ == '__main__':
 
     print(files)
 
+
     # TODO: Load the PLM images
 
+    from scipy.io import loadmat
+    import os
 
-import scipy.io
-mat = scipy.io.loadmat('/data/Repositories/HMDS_orientation/Stitched PLI')
-
-
-
-
-
+    file_list = os.listdir('/data/Repositories/HMDS_orientation/Stitched_PLI/')
+    print(file_list)
+    for filename in sorted(file_list):
+        if filename.endswith('.mat'):
+            print(filename)
+            annots = loadmat(filename)
+            print(annots)
 
 
 

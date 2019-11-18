@@ -33,9 +33,6 @@ def PLM_plot(images):
     plt.show()
 
 
-
-
-
 if __name__ == '__main__':
 
     HMDS_path = "/data/Repositories/HMDS_orientation/Data/"
@@ -61,7 +58,5 @@ if __name__ == '__main__':
         print_orthogonal(data, title=filelist[i])
         
         print(data.shape)
-
-
     print(files)
 

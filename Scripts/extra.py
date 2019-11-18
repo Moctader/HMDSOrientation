@@ -17,12 +17,21 @@ import os
 
 
 def PLM_plot(images):
-    plt.imshow(images['az90'])
-    plt.show()
-    names = ['az90', 'az', 'ret']
-    values = [1, 3, 27]
-    plt.figure(figsize=(27, 3))
 
+    plt.figure()
+    plt.subplot(1,3,1)
+    plt.imshow(images['az90'])
+    plt.title(filename)
+
+    plt.subplot(1,3,2)
+    plt.imshow(images['az'])
+    plt.title(filename)
+
+    plt.subplot(1,3,3)
+    plt.imshow(images['ret'])
+    plt.title(filename)
+
+    plt.show()
 
 
 if __name__ == '__main__':
@@ -32,15 +41,7 @@ if __name__ == '__main__':
     n_jobs = 12
 
 
-
-
-
-
-
-
     # TODO: Load the PLM images
-
-
 
     file_list = os.listdir(PLM_path)
     print(file_list)
@@ -49,8 +50,6 @@ if __name__ == '__main__':
             print(filename)
             annots = loadmat(PLM_path+filename)
             PLM_plot(annots)
-
-
 
 
 

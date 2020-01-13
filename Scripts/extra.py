@@ -14,23 +14,25 @@ import time
 from Components.Utilities import load, print_orthogonal
 from scipy.io import loadmat
 import os
-
+import skimage.color
+import skimage.filters
+import skimage.io
+import skimage.viewer
 
 def PLM_plot(images):
-
-    plt.figure()
-    plt.subplot(1,3,1)
+    fig = plt.figure()
+    plt.subplot(1, 3, 1)
     plt.imshow(images['az90'])
-    plt.title(filename)
+    plt.title('az90')
 
-    plt.subplot(1,3,2)
+    plt.subplot(1, 3, 2)
     plt.imshow(images['az'])
-    plt.title(filename)
+    plt.title('az')
 
-    plt.subplot(1,3,3)
+    plt.subplot(1, 3, 3)
     plt.imshow(images['ret'])
-    plt.title(filename)
-
+    plt.title('ret')
+    fig.suptitle(filename)
     plt.show()
 
 
@@ -40,7 +42,6 @@ if __name__ == '__main__':
     PLM_path = '/data/Repositories/HMDS_orientation/Stitched_PLI/'
     n_jobs = 12
 
-
     # TODO: Load the PLM images
 
     file_list = os.listdir(PLM_path)
@@ -48,17 +49,18 @@ if __name__ == '__main__':
     for filename in sorted(file_list):
         if filename.endswith('.mat'):
             print(filename)
-            annots = loadmat(PLM_path+filename)
+            annots = loadmat(PLM_path + filename)
             PLM_plot(annots)
+            az90 = annots['az90']
+            plt.figure()
+            plt.imshow(az90)
+            # average on axis 0
+            a=np.array(az90)
+            avg=np.mean(a, axis=0)
+            # plot (depth axis 1, angle)
+            plt.figure
+           # plt.plot(axis=1, avg)
 
 
 
-    # Load HMDS
-    files = []
-    for i in os.listdir(HMDS_path):
-        data = load(HMDS_path + i, n_jobs=n_jobs)
-
-        print_orthogonal(data)
-        print(data.shape)
-    print(files)
 

@@ -17,7 +17,7 @@ import os
 
 
 def PLM_plot(images):
-    fig=plt.figure()
+    fig=plt.figure(1)
     plt.subplot(1, 3, 1)
     plt.imshow(images['az90'])
     plt.title('az90')
@@ -38,6 +38,7 @@ if __name__ == '__main__':
     HMDS_path = "/data/Repositories/HMDS_orientation/Data/"
     PLM_path = '/data/Repositories/HMDS_orientation/Stitched_PLI/'
     n_jobs = 12
+    load_hmds = False
 
     # TODO: Load the PLM images
 
@@ -48,15 +49,26 @@ if __name__ == '__main__':
             print(filename)
             annots = loadmat(PLM_path + filename)
             PLM_plot(annots)
+            az90 = annots['az90']
+            plt.figure(2)
+            plt.imshow(az90)
+            # average on axis 0
+            a=np.array(az90)
+            avg=np.mean(a, axis=0)
+            # plot (depth axis 1, angle)
+            plt.figure(3)
+            plt.xlabel('Depth')
+            plt.ylabel('angle')
+            plt.plot(avg)
+            plt.show()
+
 
     # Load HMDS
-    files = []
-    filelist = os.listdir(HMDS_path)
-    for i in range(len(filelist)):
-        data = load(HMDS_path+filelist[i], n_jobs=n_jobs)
-
-        print_orthogonal(data, title=filelist[i])
-        
-        print(data.shape)
-    print(files)
-
+    if load_hmds:
+        files = []
+        filelist = os.listdir(HMDS_path)
+        for i in range(len(filelist)):
+            data = load(HMDS_path+filelist[i], n_jobs=n_jobs)
+            print_orthogonal(data, title=filelist[i])
+            print(data.shape)
+        print(files)

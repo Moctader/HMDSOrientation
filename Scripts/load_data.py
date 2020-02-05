@@ -111,7 +111,6 @@ if __name__ == '__main__':
     group_kfold = GroupKFold(n_splits=5)
     group_kfold.get_n_splits(hmds_train, plm_images, patient_number)
 
-
     for train_index, val_index in group_kfold.split(hmds_train, plm_images[:21], patient_number[:21]):
         print("TRAIN:", train_index, "TEST:", val_index)
         X_train, X_test = hmds_train[train_index], plm_images[val_index]

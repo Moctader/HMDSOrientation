@@ -9,6 +9,7 @@ from tqdm import tqdm
 
 
 def load(path, axis=(1, 2, 0), n_jobs=12):
+
     """
     Loads an image stack as numpy array.
 
@@ -26,6 +27,9 @@ def load(path, axis=(1, 2, 0), n_jobs=12):
     """
     files = os.listdir(path)
     files.sort()
+
+    files = [fn for fn in files if not os.path.basename(fn).endswith('.db')]
+
     # Exclude extra files
     newlist = []
     for file in files:
@@ -35,7 +39,9 @@ def load(path, axis=(1, 2, 0), n_jobs=12):
                 newlist.append(file)
             except ValueError:
                 continue
+
     files = newlist[:]  # replace list
+
     # Load data and get bounding box
     data = Parallel(n_jobs=n_jobs)(delayed(read_image)(path, file) for file in tqdm(files, 'Loading'))
     if axis != (0, 1, 2):

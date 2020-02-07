@@ -84,7 +84,7 @@ if __name__ == '__main__':
     HMDS_save_test_rotated = "/data/Repositories/HMDS_orientation/Data/test_rotated/"
     PLM_path = '/data/Repositories/HMDS_orientation/Stitched_PLI/train/'
     n_jobs = 12
-    #load_hmds = False
+    load_hmds = False
     load_plm = False
 
     # TODO: Load the PLM images
@@ -117,14 +117,14 @@ if __name__ == '__main__':
     files_hmds = os.listdir(HMDS_path_train)
     files_hmds.sort()
     # train_hmds, test_hmds = train_test_split(files_hmds, test_size=0.2, shuffle=True)
-    #if load_hmds:
-    for i in range(len(files_hmds)):
-        data = load(HMDS_path_train + files_hmds[i], n_jobs=n_jobs)
-        print_orthogonal(data, title=files_hmds[i])
-        data_xz = np.transpose(data, (2, 0, 1))
-        save(HMDS_save_train_rotated + files_hmds[i], files_hmds[i], data_xz)
-        print(data.shape)
-    print(files)
+    if load_hmds:
+        for i in range(len(files_hmds)):
+            data = load(HMDS_path_train + files_hmds[i], n_jobs=n_jobs)
+            print_orthogonal(data, title=files_hmds[i])
+            data_xz = np.transpose(data, (2, 0, 1))
+            save(HMDS_save_train_rotated + files_hmds[i], files_hmds[i], data_xz)
+            print(data.shape)
+        print(files)
 
 
 

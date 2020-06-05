@@ -53,3 +53,9 @@ def save(HMDS_save, files_hmds, data_xz, n_jobs=12):
                             (os.path.join(HMDS_save, files_hmds, str(k).zfill(8) + '.png'),
                              data_xz[:, :, k])
                             for k in tqdm(range(n_slices), 'Saving dataset'))
+
+    # for idx in (files_plm):
+    #   os.chdir(PLM_path_train_png)
+    #  os.listdir(PLM_path_train_png)
+    # cv2.imwrite(f'{idx}.png', az90)
+    #  os.listdir(PLM_path_train_png)

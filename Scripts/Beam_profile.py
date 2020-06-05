@@ -218,8 +218,6 @@ plt.show()
 
 
 
-
-
 #HMDS test samples
 """
 files_test= []

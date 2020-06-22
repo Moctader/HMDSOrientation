@@ -240,7 +240,6 @@ if load_hmds:
         data_xz = np.transpose(Image8, (2, 0, 1))
         data_xz = np.flip(data_xz, axis=0)
         data_xz = np.transpose(data, (0, 2, 1))
-        data_xz = np.flip(data_xz, axis=1)
         print_orthogonal(data_xz, title=files_hmds[i])
         save(HMDS_save_test_rotated + files_hmds[i], files_hmds[i] + '_', data_xz)
        # read_image(image_png_path, image_png_file)

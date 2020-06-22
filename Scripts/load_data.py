@@ -190,7 +190,6 @@ if load_plm:
             annots = sio.loadmat(PLM_path + filename)
            # PLM_plot(annots)
             az90 = annots['az90']
-
             fig = plt.figure(2)
             plt.imshow(az90, cmap='bone')
             plt.axis('off')
@@ -225,12 +224,11 @@ if load_plm:
     plt.colorbar()
     plt.show()
 
-    # Load HMDS
+
+# Load HMDS
     files = []
     files_hmds = os.listdir(HMDS_path_test)
     files_hmds.sort()
-
-
 
 if load_hmds:
     for i in range(len(files_hmds)):
@@ -242,7 +240,5 @@ if load_hmds:
         data_xz = np.transpose(data, (0, 2, 1))
         print_orthogonal(data_xz, title=files_hmds[i])
         save(HMDS_save_test_rotated + files_hmds[i], files_hmds[i] + '_', data_xz)
-       # read_image(image_png_path, image_png_file)
-
         print(data.shape)
     print(files)

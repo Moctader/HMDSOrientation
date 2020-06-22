@@ -12,7 +12,7 @@ from scipy import ndimage
 import matplotlib.pyplot as plt
 # from skimage.io import imsave
 import time
-from Utilities import load, print_orthogonal, read_image
+from Components.Utilities import load, print_orthogonal, read_image
 from scipy.io import loadmat
 from scipy.interpolate import interp1d
 import os.path
@@ -81,13 +81,13 @@ def read_image(path, file):
     """Reads image from given path."""
     # Image
     f = os.path.join(path, file)
-    image = cv2.imread(f, cv2.IMREAD_GRAYSCALE)
-    #image = cv2.imread(f, -1)
+    #image = cv2.imread(f, cv2.IMREAD_GRAYSCALE)
+    image = cv2.imread(f, -1)
     return image
 
 def average(arr, n):
     end =  n * int(len(arr)/n)
-    return numpy.mean(arr[:end].reshape(-1, n), 1)
+    return np.mean(arr[:end].reshape(-1, n), 1)
 
 def avgNestedLists(nested_vals):
     """
@@ -110,28 +110,34 @@ def avgNestedLists(nested_vals):
 
 PLM_path = '/data/Repositories/HMDS_orientation/Stitched_PLI/test/'
 local_orientation_test='/data/Repositories/HMDS_orientation/Data/test/local_orientation_test/'
-inference_data='/data/Repositories/HMDS_collagen/workdir/New Folder/' #**/*.png'
+inference_data='/data/Repositories/HMDS_collagen/workdir/New Folder_old/' #**/*.png'
+save_results = '/data/Repositories/HMDS_collagen/workdir/Results_6_16_2020/'
 HMDS_test='/data/Repositories/HMDS_orientation/Data/test/hmds_test_flip/'
 n_jobs = 12
 
 
 prediction_false=True
-local_false=True
-plm_false=True
+local_false=False
+plm_false=False
 
 if prediction_false:
     # prediction image from hmds test sample
+    p_prediction=[]
     profiles_prediction = []
     files_pred = os.listdir(inference_data)
     files_pred.sort()
     for sample in files_pred:
         prediction = load(inference_data + sample)
+
+        prediction = prediction / 65535.
+        prediction *= 90
         mean_prediction = np.mean(prediction, axis=0)
         mean_prediction = np.mean(mean_prediction, axis=1)
         #plt.figure()
         #plt.plot(mean_prediction)
         #plt.show()
         profiles_prediction.append(mean_prediction)
+        p_prediction.append(prediction)
 
     for sample in range(len(profiles_prediction)):
         # Resample
@@ -203,18 +209,55 @@ if plm_false:
         #plt.legend(loc='best')
         #plt.show()
 
+for sample in range(len(samples_local)):
+    # Resample local ori
+    local_resampled = resample(profiles_local[sample], len(profiles_local[sample]))
+    local_linspace_x = np.linspace(0, 1, len(local_resampled))
+    local_interp1d_f = interp1d(local_linspace_x, local_resampled)
+    local_linspace_xnew = np.linspace(0, 1, num=100, endpoint=True)
+    local_interp1d_f2 = interp1d(local_linspace_x, local_resampled)
 
-plt.figure()
-plt.plot(local_linspace_xnew, local_interp1d_f2(local_linspace_xnew), label='local orientation')
-plt.plot(prediction_linspace_xnew, prediction_interp1d_f2(prediction_linspace_xnew),label='prediction')
-plt.plot(plm_linspace_xnew, plm_interp1d_f2(plm_linspace_xnew),label='PLM')
-plt.legend(loc='best')
-plt.title('Sample 5922-4L')
-plt.xticks([0.0, 1.0], ["Surface",  "Deep"])
-plt.ylabel('Orientations (degrees)')
-plt.show()
+    # Resample PLM
+    plm_resampled = resample(profiles_plm[sample], len(profiles_plm[sample]))
+    plm_linspace_x = np.linspace(0, 1, len(plm_resampled))
+    plm_interp1d_f = interp1d(plm_linspace_x, plm_resampled)
+    plm_linspace_xnew = np.linspace(0, 1, num=100, endpoint=True)
+    plm_interp1d_f2 = interp1d(plm_linspace_x, plm_resampled)
 
 
+    # Resample prediction
+    prediction_resampled = resample(profiles_prediction[sample], len(profiles_prediction[sample]))
+    prediction_linspace_x = np.linspace(0, 1, len(prediction_resampled))
+    prediction_interp1d_f = interp1d(prediction_linspace_x, prediction_resampled)
+    prediction_linspace_xnew = np.linspace(0, 1, num=100, endpoint=True)
+    prediction_interp1d_f2 = interp1d(prediction_linspace_x, prediction_resampled)
+
+    # Combined image
+    plt.figure()
+    plt.plot(local_linspace_xnew, local_interp1d_f2(local_linspace_xnew), label='local orientation')
+    plt.plot(prediction_linspace_xnew, prediction_interp1d_f2(prediction_linspace_xnew),label='prediction')
+    plt.plot(plm_linspace_xnew, plm_interp1d_f2(plm_linspace_xnew),label='PLM')
+    plt.legend(loc='best')
+    sample_name = samples_local[sample]
+    plt.title(f'Sample {sample_name}')
+    plt.xticks([0.0, 1.0], ["Surface",  "Deep"])
+    plt.ylabel('Orientations (degrees)')
+    save_path = save_results + sample_name + '_combined.png'
+    plt.savefig(save_path)
+    plt.show()
+
+    # Prediction
+    plt.plot(profiles_prediction[sample])
+    plt.show()
+
+    plt.figure()
+    plt.plot(prediction_linspace_xnew, prediction_interp1d_f2(prediction_linspace_xnew),label='prediction')
+    plt.title(f'Sample {sample_name} (prediction)')
+    plt.xticks([0.0, 1.0], ["Surface", "Deep"])
+    plt.ylabel('Orientations (degrees)')
+    save_path = save_results + sample_name + '_prediction.png'
+    plt.savefig(save_path)
+    plt.show()
 
 
 #HMDS test samples

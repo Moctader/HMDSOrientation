@@ -2,7 +2,7 @@ import os
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from Utilities import load, print_orthogonal, read_image
+#from Utilities import load, print_orthogonal, read_image
 from scipy.io import loadmat
 #from HMDSOrientation.Scripts import map_unit16_to_unit8
 import os.path
